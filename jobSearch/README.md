@@ -1,5 +1,5 @@
 #### Description
-This is a demo to crawl sde jobs in Canada from Amazon job website using scrapy in an asynchronized way and insert the data into the mySQL database directly asynchronously。
+This is a demo to crawl sde jobs in Canada from Amazon job website using scrapy in an asynchronized way and insert the data into the mySQL database directly asynchronously.
 
 #### Environment
 pip install scrapy
