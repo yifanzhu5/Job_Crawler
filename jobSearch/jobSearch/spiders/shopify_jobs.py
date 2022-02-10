@@ -3,10 +3,10 @@ import requests
 import json
 import csv
 from ..items import ShopifyItem
-import re
-from parsel import Selector
 import datetime
 import time
+import re
+from parsel import Selector
 
 
 class ShopifyJobsSpider(scrapy.Spider):
@@ -27,8 +27,8 @@ class ShopifyJobsSpider(scrapy.Spider):
 
     name = 'shopify_jobs'
     url = 'https://www.shopify.com/careers/search?teams%5B%5D=data&teams%5B%5D=engineering&teams%5B%5D=interns&locations%5B%5D=Americas&locations%5B%5D=Canada&keywords=&sort=team_asc'
-    ts = time.time()
-    timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+    timestamp = int(time.time())
+
 
     def start_requests(self):
         headers = {
@@ -50,7 +50,6 @@ class ShopifyJobsSpider(scrapy.Spider):
         print("running time:" + str(t2 - self.t1))
 
     def parse(self, response, reqUrl):
-
         print('crawling shopify')
         html = response.text
         selector = Selector(html)

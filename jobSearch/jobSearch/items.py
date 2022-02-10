@@ -44,5 +44,6 @@ class ShopifyItem(scrapy.Item):
     from_url = scrapy.Field()
     apply_url = scrapy.Field()
     new_grad = scrapy.Field()
+    publish_time = scrapy.Field()
 
 # add your new item class
