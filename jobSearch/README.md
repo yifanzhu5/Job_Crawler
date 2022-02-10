@@ -9,7 +9,7 @@ pip install pymysql
 #### How to use
 1. Prepare mySQL database
 
-Create one table named "jobs" in your mySQL database with 16 mandatory columns : **publish_time, description, company, locations, apply_url, from_url, basic_qualifications, team, city, job_category, job_family, job_schedule_type, preferred_qualifications, title, update_time, new_grad**(make sure the datatype is big enough for all these contents).
+Create one table named "jobs" in your mySQL database with 16 mandatory columns : **title, publish_time, description, company, locations, apply_url, from_url, basic_qualifications, team, city, job_category, job_family, job_schedule_type, preferred_qualifications, update_time, new_grad**(make sure the datatype is big enough for all these contents).
 
 2. Generate spider file
 
