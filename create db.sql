@@ -1,6 +1,6 @@
 CREATE TABLE `job`.`jobs` (
   `title` TEXT NOT NULL,
-  `publish_time` TEXT NULL,
+  `publish_time` INT NULL,
   `description` TEXT NULL,
   `company` TEXT NOT NULL,
   `locations` TEXT NULL,
