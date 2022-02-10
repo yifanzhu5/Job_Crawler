@@ -45,6 +45,10 @@ class MultiPipeline:
             query = self.dbpool.runInteraction(self.amazon_insert, item)  # 指定操作方法和操作数据
             # 添加异常处理
             query.addCallback(self.handle_error)
+        elif spider.name == 'google_jobs':
+            query = self.dbpool.runInteraction(self.google_insert, item)  # 指定操作方法和操作数据
+            # 添加异常处理
+            query.addCallback(self.handle_error)
         elif spider.name == 'shopify_jobs':
             query = self.dbpool.runInteraction(self.shopify_insert, item)  # 指定操作方法和操作数据
             # 添加异常处理
@@ -114,6 +118,28 @@ class MultiPipeline:
                                     item['from_url'])
                                 )
 
+    def google_insert(self, cursor, item):
+        cursor.execute("""select * from jobs where from_url = %s""", item['from_url'])
+        # 是否有重复数据
+        repetition = cursor.fetchone()
+
+        # 重复
+        if repetition:
+            pass
+        else:
+            # 对数据库进行插入操作，并不需要commit，twisted会自动commit
+            # 根据表名和列名修改
+            insert_sql = """insert into jobs(title,publish_time,locations,description,company,apply_url,from_url)
+            value (%s, %s, %s, %s, %s, %s, %s)"""
+            cursor.execute(insert_sql, (
+                item['title'],
+                item['publish_time'],
+                item['locations'],
+                item['description'],
+                item['company'],
+                item['apply_url'],
+                item['from_url'])
+                           )
 
     def shopify_insert(self, cursor, item):
         cursor.execute("""select * from jobs where from_url = %s""", item['from_url'])
@@ -125,18 +151,20 @@ class MultiPipeline:
             pass
         else:
             # 对数据库进行插入操作，并不需要commit，twisted会自动commit
-            insert_sql = """insert into jobs(title,company,locations,team,apply_url,new_grad,description,from_url)
-            value (%s, %s, %s, %s, %s, %s, %s, %s)"""
-            cursor.execute(insert_sql, (
-                                    item['title'],
-                                    item['company'],
-                                    item['locations'],
-                                    item['team'],
-                                    item['apply_url'],
-                                    item['new_grad'],
-                                    item['description'],
-                                    item['from_url']
-                                )
+            insert_sql = """insert into jobs(title,company,locations,team,apply_url,new_grad,description,from_url,publish_time)
+            value (%s, %s, %s, %s, %s, %s, %s, %s,%s)"""
+            cursor.execute(insert_sql,
+                           (
+                               item['title'],
+                               item['company'],
+                               item['locations'],
+                               item['team'],
+                               item['apply_url'],
+                               item['new_grad'],
+                               item['description'],
+                               item['from_url'],
+                               item["publish_time"]
+                           )
                            )
 
     # add your own insert function

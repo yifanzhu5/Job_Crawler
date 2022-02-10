@@ -40,10 +40,18 @@ class AmazonItem(scrapy.Item):
     origin_id = scrapy.Field()
     from_url = scrapy.Field()
 
+class GoogleItem(scrapy.Item):
+    title = scrapy.Field()
+    publish_time = scrapy.Field()
+    locations = scrapy.Field()
+    description = scrapy.Field()
+    company = scrapy.Field()
+    apply_url = scrapy.Field()
+    from_url = scrapy.Field()
 
 class ShopifyItem(scrapy.Item):
-    # define the fields for your item here like:
     team = scrapy.Field()
+    publish_time = scrapy.Field()
     locations = scrapy.Field()
     company = scrapy.Field()
     description = scrapy.Field()
@@ -51,5 +59,6 @@ class ShopifyItem(scrapy.Item):
     from_url = scrapy.Field()
     apply_url = scrapy.Field()
     new_grad = scrapy.Field()
+    publish_time = scrapy.Field()
 
 # add your new item class
