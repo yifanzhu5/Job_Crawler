@@ -9,11 +9,7 @@ pip install pymysql
 #### How to use
 1. Prepare mySQL database
 
-Create one table(or tables for all websites) in your mySQL database with 5 mandatory columns : **publish_time, description, company, apply_url, from_url**(make sure the datatype is big enough for all these contents).
-
-And some other columns according to the website information(already used by Amazon or Shopify data) : **basic_qualifications, team, city, job_category, job_family, job_schedule_type, preferred_qualifications, title, update_time, new_grad, origin_id**.
-
-Or you can create new columns for certain websites.
+Create one table named "jobs" in your mySQL database with 16 mandatory columns : **publish_time, description, company, locations, apply_url, from_url, basic_qualifications, team, city, job_category, job_family, job_schedule_type, preferred_qualifications, title, update_time, new_grad**(make sure the datatype is big enough for all these contents).
 
 2. Generate spider file
 
@@ -34,7 +30,7 @@ Modify crawler.py under jobSearch dir, add "process.crawl('spiderName')" before 
 
 (1) Modify MultiPipeline class in pipelines.py, add new elif process in "process_item" function
 
-(2) Add new_insert function, replace insert_sql and cursor.execute() with your own database table name and the specific item entries.
+(2) Add new_insert function, replace insert_sql and cursor.execute() with item entries of your own database.
 
 6. Define database settings
 
