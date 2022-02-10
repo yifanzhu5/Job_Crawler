@@ -6,22 +6,35 @@
 import scrapy
 
 
-class JobsearchItem(scrapy.Item):
+class AmazonItem(scrapy.Item):
     # define the fields for your item here like:
     basic_qualifications = scrapy.Field()
-    business_category = scrapy.Field()
+    team = scrapy.Field()
     city = scrapy.Field()
-    company_name = scrapy.Field()
-    country_code = scrapy.Field()
+    company = scrapy.Field()
+    locations = scrapy.Field()
     description = scrapy.Field()
     job_category = scrapy.Field()
     job_family = scrapy.Field()
     job_schedule_type = scrapy.Field()
-    normalized_location = scrapy.Field()
-    posted_date = scrapy.Field()
+    update_time = scrapy.Field()
     preferred_qualifications = scrapy.Field()
     title = scrapy.Field()
-    updated_time = scrapy.Field()
-    url_next_step = scrapy.Field()
+    publish_time = scrapy.Field()
+    apply_url = scrapy.Field()
     origin_id = scrapy.Field()
+    from_url = scrapy.Field()
 
+
+class ShopifyItem(scrapy.Item):
+    # define the fields for your item here like:
+    team = scrapy.Field()
+    locations = scrapy.Field()
+    company = scrapy.Field()
+    description = scrapy.Field()
+    title = scrapy.Field()
+    from_url = scrapy.Field()
+    apply_url = scrapy.Field()
+    new_grad = scrapy.Field()
+
+# add your new item class

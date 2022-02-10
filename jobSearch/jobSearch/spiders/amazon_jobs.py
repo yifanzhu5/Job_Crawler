@@ -4,29 +4,32 @@ import scrapy
 import requests
 import json
 import csv
-from ..items import JobsearchItem
+from ..items import AmazonItem
 import datetime
 
 class AmazonJobsSpider(scrapy.Spider):
+    '''
     f = open('amazon.csv', mode='a', encoding='utf-8', newline='')
     csv_writer = csv.DictWriter(f, fieldnames=["basic_qualifications",
-                                               "business_category",
+                                               "team",
                                                "city",
-                                               "company_name",
-                                               "country_code",
+                                               "company",
+                                               "locations",
                                                "description",
                                                "job_category",
                                                "job_family",
                                                "job_schedule_type",
-                                               "normalized_location",
-                                               "posted_date",
+                                               "publish_time",
                                                "preferred_qualifications",
                                                "title",
-                                               "updated_time",
-                                               "url_next_step"
+                                               "update_time",
+                                               "apply_url"
+                                               "from_url"
+                                               "origin_id"
                                                ])
     csv_writer.writeheader()
-    t1 = datetime.datetime.now()
+    '''
+
     name = 'amazon_jobs'
     start_urls = ['https://www.amazon.jobs/en/search.json?'\
                   'category%5B%5D=software-development&' \
@@ -86,12 +89,10 @@ class AmazonJobsSpider(scrapy.Spider):
             reqUrl = self.page_url.format('software-development', (self.page - 1) * 10)
             yield scrapy.Request(reqUrl, callback=self.parse)
             self.page += 1
-        t2 = datetime.datetime.now()
-        print("running time:" + str(t2-self.t1))
-
 
     def parse(self, response):
 
+        print('crawling amazon')
         html_data = response.text
         json_data = json.loads(html_data)
         jobs = json_data["jobs"]
@@ -101,13 +102,12 @@ class AmazonJobsSpider(scrapy.Spider):
             business_category = job["business_category"]
             city = job["city"]
             company_name = job["company_name"]
-            country_code = job["country_code"]
+            location = job["location"]
             description = job["description"]
             job_category = job["job_category"]
             job_family = job["job_family"]
             job_schedule_type = job["job_schedule_type"]
-            normalized_location = job["normalized_location"]
-            posted_date = job["posted_date"]
+            publish_time = job["posted_date"]
             preferred_qualifications = job["preferred_qualifications"]
             title = job["title"]
             updated_time = job["updated_time"]
@@ -118,38 +118,39 @@ class AmazonJobsSpider(scrapy.Spider):
                 "basic_qualifications": basic_qualifications,
                 "business_category": business_category,
                 "city": city,
-                "company_name": company_name,
-                "country_code": country_code,
+                "company": company_name,
+                "locations": location,
                 "description": description,
                 "job_category": job_category,
                 "job_family": job_family,
                 "job_schedule_type": job_schedule_type,
-                "normalized_location": normalized_location,
-                "posted_date": posted_date,
+                "publish_time": publish_time,
                 "preferred_qualifications": preferred_qualifications,
                 "title": title,
-                "updated_time": updated_time,
-                "url_next_step": url_next_step,
+                "update_time": updated_time,
+                "apply_url": url_next_step,
+                "from_url" : 'https://jobs-us-east.amazon.com/en/jobs/' + origin_id,
+                "origin_id" : origin_id
             }
             self.csv_writer.writerow(dict)
             '''
-            item = JobsearchItem()
+            item = AmazonItem()
             item['basic_qualifications'] = basic_qualifications
-            item['business_category'] = business_category
+            item['team'] = business_category
             item['city'] = city
-            item['company_name'] = company_name
-            item['country_code'] = country_code
+            item['company'] = company_name
+            item['locations'] = location
             item['description'] = description
             item['job_category'] = job_category
             item['job_family'] = job_family
             item['job_schedule_type'] = job_schedule_type
-            item['normalized_location'] = normalized_location
-            item['posted_date'] = posted_date
+            item['publish_time'] = publish_time
             item['preferred_qualifications'] = preferred_qualifications
             item['title'] = title
-            item['updated_time'] = updated_time
-            item['url_next_step'] = url_next_step
+            item['update_time'] = updated_time
+            item['apply_url'] = url_next_step
             item['origin_id'] = origin_id
+            item['from_url'] = 'https://jobs-us-east.amazon.com/en/jobs/' + origin_id
 
             yield item
 

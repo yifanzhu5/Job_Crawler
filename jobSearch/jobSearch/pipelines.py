@@ -10,7 +10,7 @@ from itemadapter import ItemAdapter
 import pymysql
 from twisted.enterprise import adbapi
 
-class JobsearchPipeline:
+class MultiPipeline:
     def __init__(self, dbpool):
         self.dbpool = dbpool
 
@@ -27,7 +27,7 @@ class JobsearchPipeline:
             user=settings['MYSQL_USER'],
             password=settings['MYSQL_PASSWD'],
             port=3306,
-            charset='utf8',
+            charset='utf8mb4',
             use_unicode=True,
             cursorclass=pymysql.cursors.DictCursor  # 指定cursor类型
         )
@@ -41,11 +41,17 @@ class JobsearchPipeline:
         """
         使用twisted将MySQL插入变成异步执行。通过连接池执行具体的sql操作，返回一个对象
         """
-        query = self.dbpool.runInteraction(self.do_insert, item)  # 指定操作方法和操作数据
-        # 添加异常处理
-        query.addCallback(self.handle_error)  # 处理异常
+        if spider.name == 'amazon_jobs':
+            query = self.dbpool.runInteraction(self.amazon_insert, item)  # 指定操作方法和操作数据
+            # 添加异常处理
+            query.addCallback(self.handle_error)
+        elif spider.name == 'shopify_jobs':
+            query = self.dbpool.runInteraction(self.shopify_insert, item)  # 指定操作方法和操作数据
+            # 添加异常处理
+            query.addCallback(self.handle_error)
+        # add your own elif process
 
-    def do_insert(self, cursor, item):
+    def amazon_insert(self, cursor, item):
         cursor.execute("""select * from amazon where origin_id = %s""", item['origin_id'])
         # 是否有重复数据
         repetition = cursor.fetchone()
@@ -55,32 +61,62 @@ class JobsearchPipeline:
             pass
         else:
             # 对数据库进行插入操作，并不需要commit，twisted会自动commit
-            insert_sql = """insert into amazon(basic_qualifications, business_category,city,
-            company_name,country_code,description,job_category,job_family,job_schedule_type,
-            normalized_location,posted_date,preferred_qualifications,title,updated_time,
-            url_next_step,origin_id)
+            # 根据表名和列名修改
+            insert_sql = """insert into amazon(basic_qualifications,team,city,
+            company,locations,description,job_category,job_family,job_schedule_type,
+            publish_time,preferred_qualifications,title,update_time,
+            apply_url,from_url,origin_id)
             value (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
             cursor.execute(insert_sql,
                                 (
                                     item['basic_qualifications'],
-                                    item['business_category'],
+                                    item['team'],
                                     item['city'],
-                                    item['company_name'],
-                                    item['country_code'],
+                                    item['company'],
+                                    item['locations'],
                                     item['description'],
                                     item['job_category'],
                                     item['job_family'],
                                     item['job_schedule_type'],
-                                    item['normalized_location'],
-                                    item['posted_date'],
+                                    item['publish_time'],
                                     item['preferred_qualifications'],
                                     item['title'],
-                                    item['updated_time'],
-                                    item['url_next_step'],
+                                    item['update_time'],
+                                    item['apply_url'],
+                                    item['from_url'],
                                     item['origin_id'])
                                 )
+
+    def shopify_insert(self, cursor, item):
+        cursor.execute("""select * from shopify where title = %s""", item['title'])
+        # 是否有重复数据
+        repetition = cursor.fetchone()
+
+        # 重复
+        if repetition:
+            pass
+        else:
+            # 对数据库进行插入操作，并不需要commit，twisted会自动commit
+            insert_sql = """insert into shopify(title,company,locations,team,apply_url,new_grad,description,from_url)
+            value (%s, %s, %s, %s, %s, %s, %s, %s)"""
+            cursor.execute(insert_sql, (
+                                    item['title'],
+                                    item['company'],
+                                    item['locations'],
+                                    item['team'],
+                                    item['apply_url'],
+                                    item['new_grad'],
+                                    item['description'],
+                                    item['from_url']
+                                )
+                           )
+
+    # add your own insert function
 
     def handle_error(self, failure):
         if failure:
             # 打印错误信息
             print(failure)
+
+
+
