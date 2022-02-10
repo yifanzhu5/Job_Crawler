@@ -6,6 +6,21 @@
 import scrapy
 
 
+class GlassdoorItem(scrapy.Item):
+    company = scrapy.Field()
+    locations = scrapy.Field()
+    description = scrapy.Field()
+    job_category = scrapy.Field()
+    job_schedule_type = scrapy.Field()
+    title = scrapy.Field()
+    publish_time = scrapy.Field()
+    glassdoor_id = scrapy.Field()
+    from_url = scrapy.Field()
+
+
+
+
+
 class AmazonItem(scrapy.Item):
     # define the fields for your item here like:
     basic_qualifications = scrapy.Field()

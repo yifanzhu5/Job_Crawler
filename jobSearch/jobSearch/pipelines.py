@@ -53,7 +53,35 @@ class MultiPipeline:
             query = self.dbpool.runInteraction(self.shopify_insert, item)  # 指定操作方法和操作数据
             # 添加异常处理
             query.addCallback(self.handle_error)
-        # add your own elif process
+        elif spider.name == 'glassdoor_jobs':
+            query = self.dbpool.runInteraction(self.glassdoor_insert, item)  # 指定操作方法和操作数据
+            # 添加异常处理
+            query.addCallback(self.handle_error)
+
+
+    def glassdoor_insert(self,cursor,item):
+        cursor.execute("""select * from jobs where glassdoor_id = %s""", item['glassdoor_id'])
+        repetition = cursor.fetchone()
+        if repetition:
+            pass
+        else:
+            insert_sql ="""insert into jobs(
+            company,locations,description,job_category,job_schedule_type,title,
+            publish_time,glassdoor_id,from_url)
+            value (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+            cursor.execute(insert_sql,
+                           (
+                               item['company'],
+                               item['locations'],
+                               item['description'],
+                               item['job_category'],
+                               item['job_schedule_type'],
+                               item['title'],
+                               item['publish_time'],
+                               item['glassdoor_id'],
+                               item['from_url']
+                               )
+                           )
 
     def amazon_insert(self, cursor, item):
         cursor.execute("""select * from jobs where from_url = %s""", item['from_url'])
