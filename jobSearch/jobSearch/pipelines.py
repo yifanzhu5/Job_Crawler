@@ -52,7 +52,7 @@ class MultiPipeline:
         # add your own elif process
 
     def amazon_insert(self, cursor, item):
-        cursor.execute("""select * from amazon where origin_id = %s""", item['origin_id'])
+        cursor.execute("""select * from jobs where from_url = %s""", item['from_url'])
         # 是否有重复数据
         repetition = cursor.fetchone()
 
@@ -62,11 +62,11 @@ class MultiPipeline:
         else:
             # 对数据库进行插入操作，并不需要commit，twisted会自动commit
             # 根据表名和列名修改
-            insert_sql = """insert into amazon(basic_qualifications,team,city,
+            insert_sql = """insert into jobs(basic_qualifications,team,city,
             company,locations,description,job_category,job_family,job_schedule_type,
             publish_time,preferred_qualifications,title,update_time,
-            apply_url,from_url,origin_id)
-            value (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+            apply_url,from_url)
+            value (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
             cursor.execute(insert_sql,
                                 (
                                     item['basic_qualifications'],
@@ -83,12 +83,11 @@ class MultiPipeline:
                                     item['title'],
                                     item['update_time'],
                                     item['apply_url'],
-                                    item['from_url'],
-                                    item['origin_id'])
+                                    item['from_url'])
                                 )
 
     def shopify_insert(self, cursor, item):
-        cursor.execute("""select * from shopify where title = %s""", item['title'])
+        cursor.execute("""select * from jobs where from_url = %s""", item['from_url'])
         # 是否有重复数据
         repetition = cursor.fetchone()
 
@@ -97,7 +96,7 @@ class MultiPipeline:
             pass
         else:
             # 对数据库进行插入操作，并不需要commit，twisted会自动commit
-            insert_sql = """insert into shopify(title,company,locations,team,apply_url,new_grad,description,from_url)
+            insert_sql = """insert into jobs(title,company,locations,team,apply_url,new_grad,description,from_url)
             value (%s, %s, %s, %s, %s, %s, %s, %s)"""
             cursor.execute(insert_sql, (
                                     item['title'],
