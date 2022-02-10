@@ -2,6 +2,7 @@ import scrapy
 import requests
 import json
 from ..items import GoogleItem
+import time
 
 
 class GoogleJobsSpider(scrapy.Spider):
@@ -46,7 +47,7 @@ class GoogleJobsSpider(scrapy.Spider):
             locations = job["locations"][0].get('display')
             description = job["description"]
             # education_levels = job["education_levels"]
-            publish_date = job["publish_date"]
+            publish_date = int(time.mktime(time.strptime(job["publish_date"], '%Y-%m-%dT%H:%M:%S.%fZ')))
             # locations_count = job["locations_count"]
             # additional_instructions = job["additional_instructions"]
             # summary = job["summary"]
