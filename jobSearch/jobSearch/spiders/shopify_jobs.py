@@ -4,6 +4,7 @@ import json
 import csv
 from ..items import ShopifyItem
 import datetime
+import time
 import re
 from parsel import Selector
 
@@ -26,6 +27,8 @@ class ShopifyJobsSpider(scrapy.Spider):
 
     name = 'shopify_jobs'
     url = 'https://www.shopify.com/careers/search?teams%5B%5D=data&teams%5B%5D=engineering&teams%5B%5D=interns&locations%5B%5D=Americas&locations%5B%5D=Canada&keywords=&sort=team_asc'
+    timestamp = int(time.time())
+
 
     def start_requests(self):
         headers = {
@@ -47,7 +50,6 @@ class ShopifyJobsSpider(scrapy.Spider):
         print("running time:" + str(t2 - self.t1))
 
     def parse(self, response, reqUrl):
-
         print('crawling shopify')
         html = response.text
         selector = Selector(html)
@@ -84,6 +86,7 @@ class ShopifyJobsSpider(scrapy.Spider):
             item['new_grad'] = new_graduate
             item['description'] = JD_data
             item['from_url'] = reqUrl
+            item['publish_time'] = self.timestamp
 
             yield item
             # Dict = {

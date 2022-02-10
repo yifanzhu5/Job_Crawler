@@ -10,6 +10,7 @@ from itemadapter import ItemAdapter
 import pymysql
 from twisted.enterprise import adbapi
 
+
 class MultiPipeline:
     def __init__(self, dbpool):
         self.dbpool = dbpool
@@ -68,23 +69,23 @@ class MultiPipeline:
             apply_url,from_url)
             value (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
             cursor.execute(insert_sql,
-                                (
-                                    item['basic_qualifications'],
-                                    item['team'],
-                                    item['city'],
-                                    item['company'],
-                                    item['locations'],
-                                    item['description'],
-                                    item['job_category'],
-                                    item['job_family'],
-                                    item['job_schedule_type'],
-                                    item['publish_time'],
-                                    item['preferred_qualifications'],
-                                    item['title'],
-                                    item['update_time'],
-                                    item['apply_url'],
-                                    item['from_url'])
-                                )
+                           (
+                               item['basic_qualifications'],
+                               item['team'],
+                               item['city'],
+                               item['company'],
+                               item['locations'],
+                               item['description'],
+                               item['job_category'],
+                               item['job_family'],
+                               item['job_schedule_type'],
+                               item['publish_time'],
+                               item['preferred_qualifications'],
+                               item['title'],
+                               item['update_time'],
+                               item['apply_url'],
+                               item['from_url'])
+                           )
 
     def shopify_insert(self, cursor, item):
         cursor.execute("""select * from jobs where from_url = %s""", item['from_url'])
@@ -96,18 +97,20 @@ class MultiPipeline:
             pass
         else:
             # 对数据库进行插入操作，并不需要commit，twisted会自动commit
-            insert_sql = """insert into jobs(title,company,locations,team,apply_url,new_grad,description,from_url)
-            value (%s, %s, %s, %s, %s, %s, %s, %s)"""
-            cursor.execute(insert_sql, (
-                                    item['title'],
-                                    item['company'],
-                                    item['locations'],
-                                    item['team'],
-                                    item['apply_url'],
-                                    item['new_grad'],
-                                    item['description'],
-                                    item['from_url']
-                                )
+            insert_sql = """insert into jobs(title,company,locations,team,apply_url,new_grad,description,from_url,publish_time)
+            value (%s, %s, %s, %s, %s, %s, %s, %s,%s)"""
+            cursor.execute(insert_sql,
+                           (
+                               item['title'],
+                               item['company'],
+                               item['locations'],
+                               item['team'],
+                               item['apply_url'],
+                               item['new_grad'],
+                               item['description'],
+                               item['from_url'],
+                               item["publish_time"]
+                           )
                            )
 
     # add your own insert function
@@ -116,6 +119,3 @@ class MultiPipeline:
         if failure:
             # 打印错误信息
             print(failure)
-
-
-

@@ -6,6 +6,7 @@ import json
 import csv
 from ..items import AmazonItem
 import datetime
+import time
 
 class AmazonJobsSpider(scrapy.Spider):
     '''
@@ -97,7 +98,12 @@ class AmazonJobsSpider(scrapy.Spider):
         json_data = json.loads(html_data)
         jobs = json_data["jobs"]
 
+
         for job in jobs:
+            posted_time=job["posted_date"]+" 00:00:00"
+            timeArray = time.strptime(posted_time, "%B %d, %Y %H:%M:%S")
+            timestamp = int(time.mktime(timeArray))
+
             basic_qualifications = job["basic_qualifications"]
             business_category = job["business_category"]
             city = job["city"]
@@ -107,7 +113,7 @@ class AmazonJobsSpider(scrapy.Spider):
             job_category = job["job_category"]
             job_family = job["job_family"]
             job_schedule_type = job["job_schedule_type"]
-            publish_time = job["posted_date"]
+            publish_time = timestamp
             preferred_qualifications = job["preferred_qualifications"]
             title = job["title"]
             updated_time = job["updated_time"]
