@@ -7,5 +7,6 @@ process = CrawlerProcess(get_project_settings())
 process.crawl('amazon_jobs')
 process.crawl('google_jobs')
 process.crawl('shopify_jobs')
+process.crawl('glassdoor_jobs')
 
 process.start()
