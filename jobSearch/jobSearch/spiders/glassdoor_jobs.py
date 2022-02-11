@@ -10,6 +10,8 @@ import requests
 import urllib.request
 from urllib.request import urlopen, Request
 from urllib.parse import urlparse
+import time
+
 import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -130,7 +132,8 @@ def update_url(prev_url, page_index):
 def config():
     list=[]
     jobtype = ["jobType=fulltime", "jobType=parttime", "jobType=contract", "jobType=internship", "jobType=temporary"]
-    posttime = ["fromAge=1", "fromAge=3", "fromAge=7", "fromAge=14", "fromAge=30"]
+    posttime=[""]
+    #posttime = ["fromAge=1", "fromAge=3", "fromAge=7", "fromAge=14", "fromAge=30"]
     senority = ["seniorityType=internship", "seniorityType=entrylevel", "seniorityType=midseniorlevel","seniorityType=director", "seniorityType=executive"]
     base=["https://www.glassdoor.ca/Job/canada-software-jobs-SRCH_IL.0,6_IN3_KO7,15.htm"]
     for itembase in base:
@@ -180,6 +183,8 @@ class GlassdoorJobsSpider(scrapy.Spider):
 
 
     def start_requests(self):
+        qidian_headers = {
+            "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36 QQBrowser/9.3"}
         start_urls=config()
 
         for url in start_urls:
@@ -207,6 +212,7 @@ class GlassdoorJobsSpider(scrapy.Spider):
         maxPages = re.sub(r"\D", "", maxPages_raw)[1:]
 
 
+
         list_nextstage=[]
         page_index = 1
         total_listingCount = 0
@@ -218,19 +224,35 @@ class GlassdoorJobsSpider(scrapy.Spider):
             page_index = page_index + 1
             prev_url = new_url
 
+        qidian_headers = {
+            "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36 QQBrowser/9.3"}
+
         for url in list_nextstage:
-            yield scrapy.Request(url=url, meta={'para':para,'url':url}, callback=self.parse_pages,dont_filter=True)
+            yield scrapy.Request(url=url,meta={'para':para,'url':url}, callback=self.parse_pages,dont_filter=True)
 
     def parse_pages(self,response):
         para_s=response.meta['para']
         html_data = response.text
         page_soup = soup(html_data, "html.parser")
         listings_set, jobCount = extract_listings(page_soup)
+        time = page_soup.find_all("div", class_="d-flex align-items-end pl-std css-17n8uzw")
+
+
+        i=0
+        #qidian_headers = {"User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36 QQBrowser/9.3"}
         for listing_url in listings_set:
             listing_url = 'https://' +listing_url
-            yield scrapy.Request(url=listing_url, meta={'para': para_s, 'url': listing_url}, callback=self.parse_details,dont_filter=True)
+            string=str(time[i])
+            x = string.index("job-age")
+            y = string[x + 9:-6]
+            i = i + 1
+            yield scrapy.Request(url=listing_url,meta={'para': para_s, 'url': listing_url,"date_info":y}, callback=self.parse_details,dont_filter=True)
+
 
     def parse_details(selfself,response):
+        date_info=response.meta['date_info']
+        time1 = re.findall(r"\d+\.?\d*", date_info)
+        time2 = re.findall(r'[A-Za-z]', date_info)
 
         para_ss = response.meta['para']
         basicurl=response.meta['url']
@@ -245,6 +267,15 @@ class GlassdoorJobsSpider(scrapy.Spider):
         returned_tuple = extract_listing(page_soup)
         returned_tuple_list = list(returned_tuple)
 
+        times = time.time()
+        second_timestamp=int(times)
+
+        if 'd' in time2[0]:
+            a=int(time1[0])*24*3600
+            second_timestamp_final=second_timestamp-a
+        elif 'h' in time2[0]:
+            b = int(time1[0]) * 24 * 3600
+            second_timestamp_final=second_timestamp-b
 
 
         item = GlassdoorItem()
@@ -252,41 +283,12 @@ class GlassdoorJobsSpider(scrapy.Spider):
         item['locations']=returned_tuple_list[2]
         item['title']=returned_tuple_list[1]
         item['description']=returned_tuple_list[3]
-        item['job_category']=para_ss[0]
-        item['job_schedule_type']=para_ss[2]
-        item['publish_time']=para_ss[1]
+        #item['job_category']=para_ss[0]
+        #item['job_schedule_type']=para_ss[2]
+        item['publish_time']=second_timestamp_final
         item['glassdoor_id']=jobid
         item['from_url']=basicurl
+        #item update last ?? day
 
         yield item
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
