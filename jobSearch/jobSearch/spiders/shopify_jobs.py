@@ -101,4 +101,3 @@ class ShopifyJobsSpider(scrapy.Spider):
             #     # "remote":Remote_data
             # }
             # csv_writer.writerow(Dict)
-

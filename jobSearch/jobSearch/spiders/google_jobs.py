@@ -53,6 +53,7 @@ class GoogleJobsSpider(scrapy.Spider):
             # summary = job["summary"]
             # building_pins = job["building_pins"]
             # has_remote = job["has_remote"]
+            from_url = self.generateFromURL(id, title)
 
             item = GoogleItem()
             item['title'] = title
@@ -61,6 +62,12 @@ class GoogleJobsSpider(scrapy.Spider):
             item['description'] = description
             item['company'] = company_name
             item['apply_url'] = apply_url
-            item['from_url'] = "https://careers.google.com/jobs/results/" + "-" + id + "-" + title.replace(", ", "-")
+            item['from_url'] = from_url
 
             yield item
+
+    def generateFromURL(self, id, title):
+        id2 = id.replace("jobs/", "")
+        title2 = title.replace(", ", "-")
+        title3 = title2.replace(" ", "-")
+        return "https://careers.google.com/jobs/results/" + id2 + "-" + title3
