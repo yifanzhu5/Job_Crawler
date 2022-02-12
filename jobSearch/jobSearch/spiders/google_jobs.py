@@ -13,6 +13,8 @@ class GoogleJobsSpider(scrapy.Spider):
     page = 1
     total_page = 0
     page_url = "https://careers.google.com/api/v3/search/?distance=50&page={}&q=software%20engineering"
+    #only Canada
+    #page_url = "https://careers.google.com/api/v3/search/?distance=50&hl=en_US&jlo=en_US&location=Canada&page={}&q=software%20engineering"
 
     def start_requests(self):
         headers = {
