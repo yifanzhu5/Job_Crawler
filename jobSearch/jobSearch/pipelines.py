@@ -140,7 +140,7 @@ class MultiPipeline:
                            )
 
     def shopify_insert(self, cursor, item):
-        cursor.execute("""select * from jobs where from_url = %s""", item['from_url'])
+        cursor.execute("""select * from jobs2 where from_url = %s""", item['from_url'])
         # 是否有重复数据
         repetition = cursor.fetchone()
 
@@ -149,8 +149,8 @@ class MultiPipeline:
             pass
         else:
             # 对数据库进行插入操作，并不需要commit，twisted会自动commit
-            insert_sql = """insert into jobs(title,company,locations,team,apply_url,new_grad,description,from_url,publish_time)
-            value (%s, %s, %s, %s, %s, %s, %s, %s,%s)"""
+            insert_sql = """insert into jobs2(title,company,locations,team,apply_url,new_grad,description,from_url,publish_time,has_remote)
+            value (%s, %s, %s, %s, %s, %s, %s, %s,%s,%s)"""
             cursor.execute(insert_sql,
                            (
                                item['title'],
@@ -161,7 +161,8 @@ class MultiPipeline:
                                item['new_grad'],
                                item['description'],
                                item['from_url'],
-                               item["publish_time"]
+                               item["publish_time"],
+                               item["has_remote"]
                            )
                            )
 

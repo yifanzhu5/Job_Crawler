@@ -29,7 +29,6 @@ class ShopifyJobsSpider(scrapy.Spider):
     url = 'https://www.shopify.com/careers/search?teams%5B%5D=data&teams%5B%5D=engineering&teams%5B%5D=interns&locations%5B%5D=Americas&locations%5B%5D=Canada&keywords=&sort=team_asc'
     timestamp = int(time.time())
 
-
     def start_requests(self):
         headers = {
             'User-Agent': 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36',
@@ -38,7 +37,6 @@ class ShopifyJobsSpider(scrapy.Spider):
         html_data = re.findall('"view job posting:" (.*?)</a>', resp.text)
         html_list = list(map(lambda sub: sub.split('>'), html_data))
         self.total_page = len(html_list)
-
 
         for i in html_list:
             i[0] = i[0].replace('"', '').replace('href=', '')
@@ -76,6 +74,10 @@ class ShopifyJobsSpider(scrapy.Spider):
                 new_graduate = True
             else:
                 new_graduate = False
+            if title_data.casefold().find("remote") != -1:
+                remote_data = True
+            else:
+                remote_data = False
 
             item = ShopifyItem()
             item['title'] = title_data
@@ -87,6 +89,7 @@ class ShopifyJobsSpider(scrapy.Spider):
             item['description'] = JD_data
             item['from_url'] = reqUrl
             item['publish_time'] = self.timestamp
+            item["has_remote"]=remote_data
 
             yield item
             # Dict = {
