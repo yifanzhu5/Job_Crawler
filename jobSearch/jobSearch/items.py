@@ -16,6 +16,7 @@ class GlassdoorItem(scrapy.Item):
     publish_time = scrapy.Field()
     glassdoor_id = scrapy.Field()
     from_url = scrapy.Field()
+    has_remote=scrapy.Field()
 
 
 

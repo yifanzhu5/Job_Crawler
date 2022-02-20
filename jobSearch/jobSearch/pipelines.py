@@ -67,8 +67,8 @@ class MultiPipeline:
         else:
             insert_sql ="""insert into jobs(
             company,locations,description,title,
-            publish_time,glassdoor_id,from_url)
-            value (%s, %s, %s, %s, %s, %s, %s)"""
+            publish_time,glassdoor_id,from_url,has_remote)
+            value (%s, %s, %s, %s, %s, %s, %s, %s)"""
             cursor.execute(insert_sql,
                            (
                                item['company'],
@@ -77,7 +77,8 @@ class MultiPipeline:
                                item['title'],
                                item['publish_time'],
                                item['glassdoor_id'],
-                               item['from_url']
+                               item['from_url'],
+                               item['has_remote']
                                )
                            )
 
