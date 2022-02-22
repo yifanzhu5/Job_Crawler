@@ -4,7 +4,6 @@ import re
 import json
 from ..items import GlassdoorItem
 from bs4 import BeautifulSoup as soup
-# import xmltojson
 import json
 import requests
 import urllib.request
@@ -274,7 +273,7 @@ class GlassdoorJobsSpider(scrapy.Spider):
             a=int(time1[0])*24*3600
             second_timestamp_final=second_timestamp-a
         elif 'h' in time2[0]:
-            b = int(time1[0]) * 3600
+            b = int(time1[0]) * 24 * 3600
             second_timestamp_final=second_timestamp-b
 
         has_remote=False

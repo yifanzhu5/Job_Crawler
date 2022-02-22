@@ -51,6 +51,8 @@ class GoogleItem(scrapy.Item):
     company = scrapy.Field()
     apply_url = scrapy.Field()
     from_url = scrapy.Field()
+    has_remote = scrapy.Field()
+    city = scrapy.Field()
 
 class ShopifyItem(scrapy.Item):
     team = scrapy.Field()
