@@ -41,6 +41,7 @@ class AmazonItem(scrapy.Item):
     origin_id = scrapy.Field()
     from_url = scrapy.Field()
     has_remote = scrapy.Field()
+    subcompany = scrapy.Field()
 
 class GoogleItem(scrapy.Item):
     title = scrapy.Field()

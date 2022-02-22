@@ -144,7 +144,7 @@ class AmazonJobsSpider(scrapy.Spider):
             item['basic_qualifications'] = basic_qualifications
             item['team'] = business_category
             item['city'] = city
-            item['company'] = company_name
+            item['company'] = 'Amazon'
             item['locations'] = location
             item['description'] = description
             item['job_category'] = job_category
@@ -158,6 +158,7 @@ class AmazonJobsSpider(scrapy.Spider):
             item['origin_id'] = origin_id
             item['from_url'] = 'https://jobs-us-east.amazon.com/en/jobs/' + origin_id
             item['has_remote'] = False
+            item['subcompany'] = company_name
 
             yield item
 

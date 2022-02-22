@@ -18,6 +18,7 @@ CREATE TABLE `job`.`jobs` (
   `new_grad` TINYINT(1) NULL,
   `has_remote` TINYINT(1) NULL,
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+  `subcompany` TEXT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `from_url_UNIQUE` (`from_url` ASC) VISIBLE,
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
