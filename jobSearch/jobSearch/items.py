@@ -63,5 +63,6 @@ class ShopifyItem(scrapy.Item):
     apply_url = scrapy.Field()
     new_grad = scrapy.Field()
     has_remote = scrapy.Field()
+    city = scrapy.Field()
 
 # add your new item class
