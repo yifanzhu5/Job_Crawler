@@ -8,7 +8,7 @@ import scrapy
 
 class GlassdoorItem(scrapy.Item):
     company = scrapy.Field()
-    locations = scrapy.Field()
+    city = scrapy.Field()
     description = scrapy.Field()
     #job_category = scrapy.Field()
     #job_schedule_type = scrapy.Field()

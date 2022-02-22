@@ -287,21 +287,24 @@ class GlassdoorJobsSpider(scrapy.Spider):
         popular_city=["Toronto", "Vancouver","Montreal","Ottawa", "Calgary", "Mississauga", "Edmonton","Waterloo","Markham", "Halifax"]
         before_compare_location=returned_tuple_list[2].lower()
         after_compare_location = []
+
+        """
         for i in province_name:
             if i.lower() in before_compare_location:
                 after_compare_location.append(i)
                 break
-
+        """
+        """
         if len(after_compare_location) == 0:
             after_compare_location.append("null")
+        """
 
         for i in popular_city:
             if i.lower() in before_compare_location:
                 after_compare_location.append(i)
                 break
 
-        if len(after_compare_location) == 1:
-            after_compare_location.append("null")
+        if len(after_compare_location) == 0:
             after_compare_location.append(returned_tuple_list[2])
 
 
@@ -313,7 +316,7 @@ class GlassdoorJobsSpider(scrapy.Spider):
 
         item = GlassdoorItem()
         item['company']=returned_tuple_list[0]
-        item['locations']=localtion_final
+        item['city']=localtion_final
         item['title']=returned_tuple_list[1]
         item['description']=returned_tuple_list[3]
         #item['job_category']=para_ss[0]
