@@ -69,25 +69,21 @@ def extract_listingBanner(listing_soup):
 
 # extracts desired data from listing description
 def extract_listingDesc(listing_soup):
+
     listing_jobDesc_raw = None
 
     try:
-        listing_jobDesc_raw = listing_soup.find("div", id="JobDescriptionContainer")
+        listing_jobDesc_raw = listing_soup.find("div", class_="desc css-58vpdc ecgq1xb4")
         if type(listing_jobDesc_raw) != type(None):
-            listing_jobDesc=listing_jobDesc_raw
+            listing_jobDesc = listing_jobDesc_raw
         else:
             JobDescriptionContainer_found = False
             listing_jobDesc = "NA"
     except Exception as e:
-        #print("[ERROR] {} in extract_listingDesc".format(e))
+        # print("[ERROR] {} in extract_listingDesc".format(e))
         JobDescriptionContainer_found = False
         listing_jobDesc = "NA"
     return listing_jobDesc
-
-
-
-
-
 
 
 def extract_listings(page_soup):
