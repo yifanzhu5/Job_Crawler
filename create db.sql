@@ -1,4 +1,5 @@
 CREATE TABLE `job`.`jobs` (
+  `glassdoor_id` INT NULL,
   `title` TEXT NOT NULL,
   `publish_time` INT NULL,
   `description` TEXT NULL,
@@ -21,3 +22,4 @@ CREATE TABLE `job`.`jobs` (
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
+
