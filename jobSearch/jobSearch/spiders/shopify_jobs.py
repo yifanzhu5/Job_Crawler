@@ -83,13 +83,14 @@ class ShopifyJobsSpider(scrapy.Spider):
             item['title'] = title_data
             item['company'] = "Shopify"
             item['locations'] = location_data
+            item['city'] = location_data.split(',')[0]
             item['team'] = team_data
             item['apply_url'] = Apply_now_data
             item['new_grad'] = new_graduate
             item['description'] = JD_data
             item['from_url'] = reqUrl
             item['publish_time'] = self.timestamp
-            item["has_remote"]=remote_data
+            item["has_remote"] = remote_data
 
             yield item
             # Dict = {

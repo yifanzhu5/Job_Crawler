@@ -130,8 +130,8 @@ class MultiPipeline:
         else:
             # 对数据库进行插入操作，并不需要commit，twisted会自动commit
             # 根据表名和列名修改
-            insert_sql = """insert into jobs(title,publish_time,locations,description,company,apply_url,from_url)
-            value (%s, %s, %s, %s, %s, %s, %s)"""
+            insert_sql = """insert into jobs(title,publish_time,locations,description,company,apply_url,from_url,has_remote,city)
+            value (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
             cursor.execute(insert_sql, (
                 item['title'],
                 item['publish_time'],
@@ -139,7 +139,9 @@ class MultiPipeline:
                 item['description'],
                 item['company'],
                 item['apply_url'],
-                item['from_url'])
+                item['from_url'],
+                item['has_remote'],
+                item["city"])
                            )
 
     def shopify_insert(self, cursor, item):
@@ -152,8 +154,8 @@ class MultiPipeline:
             pass
         else:
             # 对数据库进行插入操作，并不需要commit，twisted会自动commit
-            insert_sql = """insert into jobs(title,company,locations,team,apply_url,new_grad,description,from_url,publish_time,has_remote)
-            value (%s, %s, %s, %s, %s, %s, %s, %s,%s,%s)"""
+            insert_sql = """insert into jobs(title,company,locations,team,apply_url,new_grad,description,from_url,publish_time,has_remote,city)
+            value (%s, %s, %s, %s, %s, %s, %s, %s,%s,%s,%s)"""
             cursor.execute(insert_sql,
                            (
                                item['title'],
@@ -165,7 +167,8 @@ class MultiPipeline:
                                item['description'],
                                item['from_url'],
                                item["publish_time"],
-                               item["has_remote"]
+                               item["has_remote"],
+                               item["city"]
                            )
                            )
 

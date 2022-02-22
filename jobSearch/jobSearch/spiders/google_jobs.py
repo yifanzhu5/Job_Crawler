@@ -12,9 +12,10 @@ class GoogleJobsSpider(scrapy.Spider):
 
     page = 1
     total_page = 0
-    page_url = "https://careers.google.com/api/v3/search/?distance=50&page={}&q=software%20engineering"
-    #only Canada
-    #page_url = "https://careers.google.com/api/v3/search/?distance=50&hl=en_US&jlo=en_US&location=Canada&page={}&q=software%20engineering"
+    #all the jobs
+    #page_url = "https://careers.google.com/api/v3/search/?distance=50&page={}&q=software%20engineering"
+    #only jobs in Canada
+    page_url = "https://careers.google.com/api/v3/search/?distance=50&hl=en_US&jlo=en_US&location=Canada&page={}&q=software%20engineering"
 
     def start_requests(self):
         headers = {
@@ -47,6 +48,7 @@ class GoogleJobsSpider(scrapy.Spider):
             # qualifications = job["qualifications"]
             company_name = job["company_name"]
             locations = job["locations"][0].get('display')
+            city = locations.split(",")[0]
             description = job["description"]
             # education_levels = job["education_levels"]
             publish_date = int(time.mktime(time.strptime(job["publish_date"], '%Y-%m-%dT%H:%M:%S.%fZ')))
@@ -54,17 +56,19 @@ class GoogleJobsSpider(scrapy.Spider):
             # additional_instructions = job["additional_instructions"]
             # summary = job["summary"]
             # building_pins = job["building_pins"]
-            # has_remote = job["has_remote"]
+            has_remote = job["has_remote"]
             from_url = self.generateFromURL(id, title)
 
             item = GoogleItem()
             item['title'] = title
             item['publish_time'] = publish_date
             item['locations'] = locations
+            item['city'] = city
             item['description'] = description
             item['company'] = company_name
             item['apply_url'] = apply_url
             item['from_url'] = from_url
+            item['has_remote'] = has_remote
 
             yield item
 
