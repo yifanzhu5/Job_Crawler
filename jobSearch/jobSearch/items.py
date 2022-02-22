@@ -16,6 +16,7 @@ class GlassdoorItem(scrapy.Item):
     publish_time = scrapy.Field()
     glassdoor_id = scrapy.Field()
     from_url = scrapy.Field()
+    has_remote=scrapy.Field()
 
 
 
@@ -39,6 +40,7 @@ class AmazonItem(scrapy.Item):
     apply_url = scrapy.Field()
     origin_id = scrapy.Field()
     from_url = scrapy.Field()
+    has_remote = scrapy.Field()
 
 class GoogleItem(scrapy.Item):
     title = scrapy.Field()

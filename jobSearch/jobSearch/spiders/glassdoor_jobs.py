@@ -277,10 +277,43 @@ class GlassdoorJobsSpider(scrapy.Spider):
             b = int(time1[0]) * 3600
             second_timestamp_final=second_timestamp-b
 
+        has_remote=False
+        if re.search('remote', returned_tuple_list[2], re.IGNORECASE) or re.search('remote', returned_tuple_list[1], re.IGNORECASE):
+            has_remote=True
+
+
+
+        province_name=["Alberta", "British Columbia", "Manitoba", "New Brunswick", "Newfoundland","Labrador", "Nova Scotia", "Ontario", "Prince Edward Island", "Quebec", "Saskatchewan","BC"]
+        popular_city=["Toronto", "Vancouver","Montreal","Ottawa", "Calgary", "Mississauga", "Edmonton","Waterloo","Markham", "Halifax"]
+        before_compare_location=returned_tuple_list[2].lower()
+        after_compare_location = []
+        for i in province_name:
+            if i.lower() in before_compare_location:
+                after_compare_location.append(i)
+                break
+
+        if len(after_compare_location) == 0:
+            after_compare_location.append("null")
+
+        for i in popular_city:
+            if i.lower() in before_compare_location:
+                after_compare_location.append(i)
+                break
+
+        if len(after_compare_location) == 1:
+            after_compare_location.append("null")
+            after_compare_location.append(returned_tuple_list[2])
+
+
+        localtion_final=str(','.join(after_compare_location))
+
+
+
+
 
         item = GlassdoorItem()
         item['company']=returned_tuple_list[0]
-        item['locations']=returned_tuple_list[2]
+        item['locations']=localtion_final
         item['title']=returned_tuple_list[1]
         item['description']=returned_tuple_list[3]
         #item['job_category']=para_ss[0]
@@ -288,6 +321,7 @@ class GlassdoorJobsSpider(scrapy.Spider):
         item['publish_time']=second_timestamp_final
         item['glassdoor_id']=jobid
         item['from_url']=basicurl
+        item['has_remote']=has_remote
         #item update last ?? day
 
         yield item
