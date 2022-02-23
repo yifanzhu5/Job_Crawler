@@ -324,3 +324,4 @@ class GlassdoorJobsSpider(scrapy.Spider):
 
         yield item
 
+
