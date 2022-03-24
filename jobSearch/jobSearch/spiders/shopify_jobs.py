@@ -21,12 +21,12 @@ class ShopifyJobsSpider(scrapy.Spider):
         }
         resp = requests.get(url=self.url, headers=headers)
         html_data = re.findall('"view job posting:" (.*?)</a>', resp.text)
-        html_list = list(map(lambda sub: sub.split('>'), html_data))
+        html_list = list(map(lambda sub: re.search('href="(.*?)"', sub).group(1), html_data))
         self.total_page = len(html_list)
 
         for i in html_list:
-            i[0] = i[0].replace('"', '').replace('href=', '')
-            reqUrl = "https://www.shopify.com" + i[0]
+            # i[0] = i[0].replace('"', '').replace('href=', '')
+            reqUrl = "https://www.shopify.com" + i
             request = scrapy.Request(reqUrl, callback=self.parse)
             request.cb_kwargs['reqUrl'] = reqUrl  # add more arguments for the callback
             yield request
