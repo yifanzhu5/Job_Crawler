@@ -4,10 +4,10 @@
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
-
+import random
 # useful for handling different item types with a single interface
 from itemadapter import is_item, ItemAdapter
-
+from .settings import USER_AGENT_LIST
 
 class JobsearchSpiderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
@@ -61,6 +61,8 @@ class JobsearchDownloaderMiddleware:
     # scrapy acts as if the downloader middleware does not modify the
     # passed objects.
 
+
+
     @classmethod
     def from_crawler(cls, crawler):
         # This method is used by Scrapy to create your spiders.
@@ -78,7 +80,9 @@ class JobsearchDownloaderMiddleware:
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
-        return None
+        request.headers.setdefault('User-Agent', random.choice(USER_AGENT_LIST))
+        #pro_adr = random.choice(self.proxyList)
+        #request.meta['proxy'] = "http://" + pro_adr
 
     def process_response(self, request, response, spider):
         # Called with the response returned from the downloader.
