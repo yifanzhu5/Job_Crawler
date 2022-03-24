@@ -9,4 +9,5 @@ process.crawl('google_jobs')
 process.crawl('shopify_jobs')
 process.crawl('glassdoor_jobs')
 
+
 process.start()
